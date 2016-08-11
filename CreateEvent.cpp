@@ -1,24 +1,23 @@
 /*
-��������һ��ȫ��event����SetEventʹ�þ�����źţ�ResetEventʹ������źţ��߳�����WaitForSingleObject���ȴ�event��
+常用设置一个全局event，用SetEvent使得句柄有信号，ResetEvent使句柄无信号，线程中用WaitForSingleObject来等待event。
 
-����ԭ�ͣ�
+函数原型：
 HANDLE CreateEvent(
 
-  LPSECURITY_ATTRIBUTES lpEventAttributes,   // ��ȫ����,���lpEventAttributes��NULL���˾�����ܱ��̳С�
+  LPSECURITY_ATTRIBUTES lpEventAttributes,   // 安全属性,如果lpEventAttributes是NULL，此句柄不能被继承。
 
-  BOOL bManualReset,   // ��λ��ʽ�����TRUE����ô������ResetEvent�������ֹ����¼���״̬��ԭ�����ź�״̬���������ΪFALSE�����¼���һ���ȴ�
-  �߳��ͷ��Ժ�ϵͳ�����Զ����¼�״̬��ԭΪ���ź�״̬��
+  BOOL bManualReset,   // 复位方式如果是TRUE，那么必须用ResetEvent函数来手工将事件的状态复原到无信号状态。如果设置为FALSE，当事件被一个等待
+  线程释放以后，系统将会自动将事件状态复原为无信号状态。
 
-  BOOL bInitialState,   // ��ʼ״̬,���ΪTRUE����ʼ״̬Ϊ���ź�״̬������Ϊ���ź�״̬��
+  BOOL bInitialState,   // 初始状态,如果为TRUE，初始状态为有信号状态；否则为无信号状态。
 
-  LPCTSTR lpName   // ��������,ָ���¼��Ķ�������ƣ���һ����0�������ַ���ָ�롣���Ƶ��ַ���ʽ�޶���MAX_PATH֮�ڡ������ǶԴ�Сд���еġ�
+  LPCTSTR lpName   // 对象名称,指定事件的对象的名称，是一个以0结束的字符串指针。名称的字符格式限定在MAX_PATH之内。名字是对大小写敏感的。
 
 );
 
 */
 #include "iostream"
-
-#include "windows.h"
+#include<windows.h>
 
 using namespace std;
 
@@ -35,7 +34,7 @@ HANDLE hThread2 = NULL;
 int main(int argc, char *args[])
 
 {
-	hEvent = CreateEvent(NULL, TRUE, TRUE, NULL); //ʹ���ֶ�����Ϊ���ź�״̬����ʼ��ʱ���ź�״̬
+	hEvent = CreateEvent(NULL, TRUE, TRUE, NULL); //使用手动重置为无信号状态，初始化时有信号状态
 	hThread1 = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ThreadProc1, NULL, 0, NULL);
 	Sleep(200);
 	hThread2 = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ThreadProc2, NULL, 0, NULL);
